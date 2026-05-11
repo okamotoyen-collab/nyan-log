@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>記録を編集</title>
+</head>
+<body>
+
+<h1>記録を編集</h1>
+
+<form action="/update" method="post">
+
+    <input type="hidden" name="id" th:value="${record.id}">
+
+    <label>投稿者</label>
+    <select name="careUser">
+        <option th:selected="${record.careUser == '👧🏻'}">👧🏻</option>
+        <option th:selected="${record.careUser == '👦🏻'}">👦🏻</option>
+    </select>
+
+    <label>時間</label>
+    <input type="datetime-local" name="time" th:value="${record.time}">
+
+    <label>お世話の項目</label>
+    <select name="category">
+        <option th:selected="${record.category == 'ご飯🐟'}">ご飯🐟</option>
+        <option th:selected="${record.category == '水交換💧'}">水交換💧</option>
+        <option th:selected="${record.category == 'チュール😻'}">チュール😻</option>
+        <option th:selected="${record.category == 'トイレ掃除🚽'}">トイレ掃除🚽</option>
+        <option th:selected="${record.category == '嘔吐🤢'}">嘔吐🤢</option>
+        <option th:selected="${record.category == '通院🏥'}">通院🏥</option>
+        <option th:selected="${record.category == 'その他'}">その他</option>
+    </select>
+
+    <label>メモ</label>
+    <textarea name="memo" th:text="${record.memo}"></textarea>
+
+    <button type="submit">更新</button>
+
+</form>
+
+<a href="/">戻る</a>
+
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>にゃん🐾ログ</title>
+
+    <style>
+        body {
+   	    background-image: url("/IMG_1334.jpg");
+
+            background-size: cover;
+
+    	    background-position: center;
+
+    	    background-attachment: fixed;
+
+    	    font-family: sans-serif;
+
+    	    padding: 15px;
+	}
+        
+
+        .card {
+    	    background-color: rgba(255, 255, 255, 0.65);
+    	   
+    	    width: 60%;
+	    max-width: 700px;
+
+    	    margin: 20px auto;
+
+   	    padding: 30px;
+
+    	    border-radius: 20px;
+	    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #ff7f50;
+	    font-size: 50px;
+   	    text-align: center;
+	    margin-top: 0;
+
+        }
+	h3 {
+   	    text-align: center;
+	    font-size: 26px;
+	}
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 18px;
+            margin-bottom: 8px;
+	    text-align: center;
+        }
+
+        input, select, textarea {
+            width: 65%;
+            padding: 10px;
+            box-sizing: border-box;
+	    display: block;
+    	    margin: auto;
+        }
+
+        textarea {
+            height: 80px;
+        }
+
+        button {
+            background-color: #ff7f50;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 160px;
+            border-radius: 5px;
+            
+	    cursor: pointer;
+	    transition: 0.2s;
+	    margin: 15px auto;
+    	    display: block;
+        }
+	button:hover {
+    	    opacity: 0.8;
+	}
+	hr {
+    	    margin: 30px 0;
+	}
+        .record {
+            background-color: rgba(255,255,255,0.7);
+            padding: 20px;
+            border-radius: 15px;
+            
+	    width: 85%;
+	    margin: 20px auto;
+	    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .record img {
+            width: 90%;
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+	.button-group {
+   	    display: flex;
+
+    	    justify-content: center;
+
+    	    gap: 15px;
+
+   	    margin-top: 15px;
+	}
+	@media screen and (max-width: 600px) {
+	    body {
+        	padding: 10px;
+    	    }
+
+    	    .card {
+       		width: 95%;
+        	padding: 20px;
+    	    }
+
+    	    h1 {
+        	font-size: 36px;
+    	    }
+
+    	    input, select, textarea {
+        	width: 100%;
+    	    }
+
+    	    button {
+        	width: 100%;
+    	    }
+
+    	    .record {
+        	width: 90%;
+    	    }
+
+    	    .button-group {
+        	flex-direction: column;
+        	gap: 5px;
+    	    }
+}
+    </style>
+    </head>
+
+    <body>
+
+    <div class="card">
+
+        <h1>にゃん🐾ログ</h1>
+
+		<form action="/add" 
+			  method="post" 
+			  enctype="multipart/form-data">
+        <label>投稿者</label>
+        <select name="careUser">
+            <option>👧🏻</option>
+            <option>👦🏻</option>
+        </select>
+
+        <label>時間</label>
+        <input type="datetime-local" name="time">
+
+        <label>お世話の項目</label>
+        <select name="category">
+            <option>ご飯🐟</option>
+            <option>水交換💧</option>
+            <option>チュール😻</option>
+            <option>トイレ掃除🚽</option>
+            <option>嘔吐🤢</option>
+            <option>通院🏥</option>
+            <option>その他</option>
+        </select>
+
+        <label>メモ</label>
+        <textarea name="memo" placeholder="例：ご飯を半分食べた、ゲロったので掃除した"></textarea>
+
+        <label>写真</label>
+        <input type="file" name="photo" accept="image/*">
+
+		<button type="submit">投稿</button>
+
+		</form>
+
+        <hr>
+
+	<label>絞り込み</label>
+
+	<select id="filter">
+        <option value="全部">全部</option>
+        <option value="ご飯🐟">ご飯🐟</option>
+        <option value="水交換💧">水交換💧</option>
+        <option value="チュール😻">チュール😻</option>
+        <option value="トイレ掃除🚽">トイレ掃除🚽</option>
+        <option value="嘔吐🤢">嘔吐🤢</option>
+        <option value="通院🏥">通院🏥</option>
+        <option value="その他">その他</option>
+	</select>
+
+        <h3>今日の記録</h3>
+
+		<div id="recordList">
+
+		    <div class="record" th:each="record : ${records}">
+				
+
+				    <!-- 通常表示 -->
+				    <div th:if="${editId != record.id}">
+
+				        <p>
+				            <strong th:text="${record.time}"></strong>
+				            <span th:text="${record.careUser}"></span>
+				            <span th:text="${record.category}"></span>
+				        </p>
+
+				        <p th:text="${record.memo}"></p>
+						<img th:if="${record.photoPath != null}"
+						     th:src="${record.photoPath}">
+
+				        <div class="button-group">
+
+				            <a th:href="@{/(editId=${record.id})}">
+				                <button type="button">編集</button>
+				            </a>
+
+				            <form action="/delete"
+				                  method="post"
+				                  onsubmit="return confirm('本当に削除しますか？')">
+				                <input type="hidden" name="id" th:value="${record.id}">
+				                <button type="submit">削除</button>
+				            </form>
+
+				        </div>
+
+				    </div>
+
+				    <!-- 編集表示 -->
+				    <div th:if="${editId == record.id}">
+
+				        <form action="/update" method="post">
+
+				            <input type="hidden" name="id" th:value="${record.id}">
+
+				            <label>投稿者</label>
+				            <select name="careUser">
+				                <option value="👧🏻" th:selected="${record.careUser == '👧🏻'}">👧🏻</option>
+				                <option value="👦🏻" th:selected="${record.careUser == '👦🏻'}">👦🏻</option>
+				            </select>
+
+				            <label>時間</label>
+				            <input type="datetime-local" name="time" th:value="${record.time}">
+
+				            <label>お世話の項目</label>
+				            <select name="category">
+				                <option value="ご飯🐟" th:selected="${record.category == 'ご飯🐟'}">ご飯🐟</option>
+				                <option value="水交換💧" th:selected="${record.category == '水交換💧'}">水交換💧</option>
+				                <option value="チュール😻" th:selected="${record.category == 'チュール😻'}">チュール😻</option>
+				                <option value="トイレ掃除🚽" th:selected="${record.category == 'トイレ掃除🚽'}">トイレ掃除🚽</option>
+				                <option value="嘔吐🤢" th:selected="${record.category == '嘔吐🤢'}">嘔吐🤢</option>
+				                <option value="通院🏥" th:selected="${record.category == '通院🏥'}">通院🏥</option>
+				                <option value="その他" th:selected="${record.category == 'その他'}">その他</option>
+				            </select>
+
+				            <label>メモ</label>
+				            <textarea name="memo" th:text="${record.memo}"></textarea>
+
+				            <button type="submit">更新</button>
+
+				        </form>
+
+						<a href="/">
+						    <button type="button">キャンセル</button>
+						</a>
+
+						</div>
+
+						</div>
+
+				
+		    </div>
+
+		</div>
+
+
+
+    <script>
+
+    </script>
+    </div>
+</body>
+</html>
