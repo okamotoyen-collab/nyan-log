@@ -1,0 +1,331 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>にゃん🐾ログ</title>
+
+    <style>
+        body {
+   	    background-image: url("IMG_1334.jpg");
+
+            background-size: cover;
+
+    	    background-position: center;
+
+    	    background-attachment: fixed;
+
+    	    font-family: sans-serif;
+
+    	    padding: 15px;
+	}
+        
+
+        .card {
+    	    background-color: rgba(255, 255, 255, 0.65);
+    	   
+    	    width: 60%;
+	    max-width: 700px;
+
+    	    margin: 20px auto;
+
+   	    padding: 30px;
+
+    	    border-radius: 20px;
+	    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #ff7f50;
+	    font-size: 50px;
+   	    text-align: center;
+	    margin-top: 0;
+
+        }
+	h3 {
+   	    text-align: center;
+	    font-size: 26px;
+	}
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 18px;
+            margin-bottom: 8px;
+	    text-align: center;
+        }
+
+        input, select, textarea {
+            width: 65%;
+            padding: 10px;
+            box-sizing: border-box;
+	    display: block;
+    	    margin: auto;
+        }
+
+        textarea {
+            height: 80px;
+        }
+
+        button {
+            background-color: #ff7f50;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 160px;
+            border-radius: 5px;
+            
+	    cursor: pointer;
+	    transition: 0.2s;
+	    margin: 15px auto;
+    	    display: block;
+        }
+	button:hover {
+    	    opacity: 0.8;
+	}
+	hr {
+    	    margin: 30px 0;
+	}
+        .record {
+            background-color: rgba(255,255,255,0.7);
+            padding: 20px;
+            border-radius: 15px;
+            
+	    width: 85%;
+	    margin: 20px auto;
+	    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .record img {
+            width: 90%;
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+	.button-group {
+   	    display: flex;
+
+    	    justify-content: center;
+
+    	    gap: 15px;
+
+   	    margin-top: 15px;
+	}
+	@media screen and (max-width: 600px) {
+	    body {
+        	padding: 10px;
+    	    }
+
+    	    .card {
+       		width: 95%;
+        	padding: 20px;
+    	    }
+
+    	    h1 {
+        	font-size: 36px;
+    	    }
+
+    	    input, select, textarea {
+        	width: 100%;
+    	    }
+
+    	    button {
+        	width: 100%;
+    	    }
+
+    	    .record {
+        	width: 90%;
+    	    }
+
+    	    .button-group {
+        	flex-direction: column;
+        	gap: 5px;
+    	    }
+}
+    </style>
+    </head>
+
+    <body>
+
+    <div class="card">
+
+        <h1>にゃん🐾ログ</h1>
+
+    
+        <label>投稿者</label>
+        <select id="user">
+            <option>👧🏻</option>
+            <option>👦🏻</option>
+        </select>
+
+        <label>時間</label>
+        <input type="datetime-local" id="time">
+
+        <label>お世話の項目</label>
+        <select id="category">
+            <option>ご飯🐟</option>
+            <option>水交換💧</option>
+            <option>チュール😻</option>
+            <option>トイレ掃除🚽</option>
+            <option>嘔吐🤢</option>
+            <option>通院🏥</option>
+            <option>その他</option>
+        </select>
+
+        <label>メモ</label>
+        <textarea id="memo" placeholder="例：ご飯を半分食べた、ゲロったので掃除した"></textarea>
+
+        <label>写真</label>
+        <input type="file" id="photo" accept="image/*">
+
+        <button onclick="addRecord()">投稿</button>
+
+        <hr>
+
+	<label>絞り込み</label>
+
+	<select id="filter" onchange="showRecords()">
+        <option value="全部">全部</option>
+        <option value="ご飯🐟">ご飯🐟</option>
+        <option value="水交換💧">水交換💧</option>
+        <option value="チュール😻">チュール😻</option>
+        <option value="トイレ掃除🚽">トイレ掃除🚽</option>
+        <option value="嘔吐🤢">嘔吐🤢</option>
+        <option value="通院🏥">通院🏥</option>
+        <option value="その他">その他</option>
+	</select>
+
+        <h3>今日の記録</h3>
+
+        <div id="recordList"></div>
+
+
+
+    <script>
+        let records = [];
+
+        window.onload = function() {
+            const savedRecords = localStorage.getItem("records");
+
+            if (savedRecords) {
+                records = JSON.parse(savedRecords);
+                showRecords();
+            }
+        }
+
+        function addRecord() {
+            const user = document.getElementById("user").value;
+            const time = document.getElementById("time").value;
+            const category = document.getElementById("category").value;
+            const memo = document.getElementById("memo").value;
+            const photo = document.getElementById("photo").files[0];
+
+            let displayTime = time;
+            if (time) {
+                displayTime = time.replace("T", " ");
+            } else {
+                displayTime = "時間未指定";
+            }
+
+            if (photo) {
+                const reader = new FileReader();
+
+                reader.onload = function(event) {
+                    const record = {
+                        user: user,
+                        time: displayTime,
+                        category: category,
+                        memo: memo,
+                        photo: event.target.result
+                    };
+
+                    records.unshift(record);
+                    saveRecords();
+                    showRecords();
+                    clearForm();
+                };
+
+                reader.readAsDataURL(photo);
+            } else {
+                const record = {
+                    user: user,
+                    time: displayTime,
+                    category: category,
+                    memo: memo,
+                    photo: ""
+                };
+
+                records.unshift(record);
+                saveRecords();
+                showRecords();
+                clearForm();
+            }
+        }
+
+        function saveRecords() {
+            localStorage.setItem("records", JSON.stringify(records));
+        }
+
+        function showRecords() {
+            const recordList = document.getElementById("recordList");
+            recordList.innerHTML = "";
+
+            const filter = document.getElementById("filter").value;
+
+	    records.forEach(function(record, index) {
+	
+    		if (filter !== "全部" && record.category !== filter) {
+        	    return;
+    		}
+                const div = document.createElement("div");
+                div.className = "record";
+
+                div.innerHTML = `
+     		<p><strong>${record.time}</strong>　${record.user}　${record.category}</p>
+   		<p>${record.memo}</p>
+
+   		<div class="button-group">
+        	<button onclick="editRecord(${index})">編集</button>
+        	<button onclick="deleteRecord(${index})">削除</button>
+    	</div>
+	`;
+
+                if (record.photo) {
+                    const img = document.createElement("img");
+                    img.src = record.photo;
+                    div.appendChild(img);
+                }
+
+                recordList.appendChild(div);
+            });
+        }
+
+        function clearForm() {
+            document.getElementById("memo").value = "";
+            document.getElementById("photo").value = "";
+        }
+	function deleteRecord(index) {
+
+    const result = confirm("本当に削除しますか？");
+
+    if (result) {
+        records.splice(index, 1);
+
+        saveRecords();
+
+        showRecords();
+    }
+}
+function editRecord(index) {
+    const newMemo = prompt("メモを編集してください", records[index].memo);
+
+    if (newMemo !== null) {
+        records[index].memo = newMemo;
+
+        saveRecords();
+
+        showRecords();
+    }
+}
+    </script>
+    </div>
+</body>
+</html>
