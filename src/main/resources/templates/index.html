@@ -56,9 +56,27 @@
         }
 
 		input,
-		select,
+		select {
+		    width: 100%;
+		    height: 60px;
+		    padding: 0 20px;
+		    box-sizing: border-box;
+		    display: block;
+		    margin: auto;
+
+		    border: none;
+		    border-radius: 18px;
+		    background-color: #f1f1f1;
+
+		    font-size: 16px;
+
+		    appearance: auto;
+		    -webkit-appearance: auto;
+		}
+
 		textarea {
 		    width: 100%;
+		    min-height: 120px;
 		    padding: 16px;
 		    box-sizing: border-box;
 		    display: block;
@@ -66,32 +84,16 @@
 
 		    border: none;
 		    border-radius: 18px;
-
 		    background-color: #f1f1f1;
 
 		    font-size: 16px;
-
-		    appearance: none;
-		    -webkit-appearance: none;
+		    resize: vertical;
 		}
 		input[type="datetime-local"]::-webkit-date-and-time-value {
 		    text-align: center;
 		}
-		input,
-		select {
-		    height: 70px;
-		}
-		select,
-		input[type="datetime-local"] {
-		    display: flex;
-		    align-items: center;
-		}
+		
 
-		input[type="datetime-local"] {
-		    height: 70px;
-		    min-height: 70px;
-		    line-height: normal;
-		}
 		select {
 		    background-position: right 15px center;
 		}
@@ -218,15 +220,7 @@
 	    .button-group {
 	        flex-direction: column;
 	    }
-		input,
-		select {
-		    height: 70px;
-		}
-
-		input[type="datetime-local"] {
-		    height: 70px;
-		    min-height: 70px;
-		}
+		
 	}
     </style>
     </head>
