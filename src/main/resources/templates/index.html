@@ -111,35 +111,40 @@
 	}
 	@media screen and (max-width: 600px) {
 	    body {
-        	padding: 10px;
-    	    }
+	        padding: 0;
+	        background-attachment: scroll;
+	        background-size: cover;
+	        background-position: center;
+	    }
 
-    	    .card {
-       		width: 95%;
-        	padding: 20px;
-    	    }
+	    .card {
+	        width: 92%;
+	        padding: 20px;
+	        margin: 20px auto;
+	    }
 
-    	    h1 {
-        	font-size: 36px;
-    	    }
+	    h1 {
+	        font-size: 40px;
+	    }
 
-    	    input, select, textarea {
-        	width: 100%;
-    	    }
+	    input, select, textarea {
+	        width: 100%;
+	        font-size: 16px;
+	    }
 
-    	    button {
-        	width: 100%;
-    	    }
+	    button {
+	        width: 100%;
+	    }
 
-    	    .record {
-        	width: 90%;
-    	    }
+	    .record {
+	        width: 92%;
+	    }
 
-    	    .button-group {
-        	flex-direction: column;
-        	gap: 5px;
-    	    }
-}
+	    .button-group {
+	        flex-direction: column;
+	        gap: 5px;
+	    }
+	}
     </style>
     </head>
 
@@ -164,10 +169,16 @@
         <label>お世話の項目</label>
         <select name="category">
             <option>ご飯🐟</option>
+			<option>遊び🧶</option>
+			<option>嘔吐🤢</option>
+			<option>トイレ掃除🚽</option>
             <option>水交換💧</option>
+			
             <option>チュール😻</option>
-            <option>トイレ掃除🚽</option>
-            <option>嘔吐🤢</option>
+            
+			<option>爪切り✂️</option>
+			<option>ブラッシング✨</option>
+			<option>体重測定⚖️</option>
             <option>通院🏥</option>
             <option>その他</option>
         </select>
@@ -189,10 +200,16 @@
 	<select id="filter">
         <option value="全部">全部</option>
         <option value="ご飯🐟">ご飯🐟</option>
+		<option value="遊び🧶">遊び🧶</option>
+		<option value="嘔吐🤢">嘔吐🤢</option>
+		<option value="トイレ掃除🚽">トイレ掃除🚽</option>
         <option value="水交換💧">水交換💧</option>
+		
         <option value="チュール😻">チュール😻</option>
-        <option value="トイレ掃除🚽">トイレ掃除🚽</option>
-        <option value="嘔吐🤢">嘔吐🤢</option>
+		<option value="爪切り✂️">爪切り✂️</option>
+		<option value="ブラッシング✨">ブラッシング✨</option>
+		<option value="体重測定⚖️">体重測定⚖️</option>
+        
         <option value="通院🏥">通院🏥</option>
         <option value="その他">その他</option>
 	</select>
@@ -253,10 +270,29 @@
 				            <label>お世話の項目</label>
 				            <select name="category">
 				                <option value="ご飯🐟" th:selected="${record.category == 'ご飯🐟'}">ご飯🐟</option>
+								<option value="遊び🧶"
+								    th:selected="${record.category == '遊び🧶'}">
+								    遊び🧶
+								</option>
+								<option value="嘔吐🤢" th:selected="${record.category == '嘔吐🤢'}">嘔吐🤢</option>
+								<option value="トイレ掃除🚽" th:selected="${record.category == 'トイレ掃除🚽'}">トイレ掃除🚽</option>
 				                <option value="水交換💧" th:selected="${record.category == '水交換💧'}">水交換💧</option>
 				                <option value="チュール😻" th:selected="${record.category == 'チュール😻'}">チュール😻</option>
-				                <option value="トイレ掃除🚽" th:selected="${record.category == 'トイレ掃除🚽'}">トイレ掃除🚽</option>
-				                <option value="嘔吐🤢" th:selected="${record.category == '嘔吐🤢'}">嘔吐🤢</option>
+								<option value="爪切り✂️"
+								    th:selected="${record.category == '爪切り✂️'}">
+								    爪切り✂️
+								</option>
+
+								<option value="ブラッシング✨"
+								    th:selected="${record.category == 'ブラッシング✨'}">
+								    ブラッシング✨
+								</option>
+
+								<option value="体重測定⚖️"
+								    th:selected="${record.category == '体重測定⚖️'}">
+								    体重測定⚖️
+								</option>
+				                
 				                <option value="通院🏥" th:selected="${record.category == '通院🏥'}">通院🏥</option>
 				                <option value="その他" th:selected="${record.category == 'その他'}">その他</option>
 				            </select>
