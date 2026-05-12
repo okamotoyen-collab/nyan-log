@@ -7,19 +7,23 @@
 
     <style>
 		body {
-		    background-image: url("/IMG_1334.JPG");
-
-		    background-size: cover;
-		    background-position: center;
-		    background-repeat: no-repeat;
-
-		    background-attachment: fixed;
+		    
 
 		    min-height: 100vh;
 
 		    font-family: sans-serif;
 		    padding: 15px;
 		    overflow-x: hidden;
+		}
+		body::before {
+		    content: "";
+		    position: fixed;
+		    inset: 0;
+		    background-image: url("/IMG_1334.JPG");
+		    background-size: cover;
+		    background-position: center;
+		    background-repeat: no-repeat;
+		    z-index: -1;
 		}
         
 
