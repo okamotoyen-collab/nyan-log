@@ -75,7 +75,18 @@
 		    -webkit-appearance: none;
 		}
 		input[type="datetime-local"]::-webkit-date-and-time-value {
-    		text-align: center;
+		    text-align: center;
+		}
+		input,
+		select {
+		    height: 70px;
+		    line-height: 70px;
+		}
+
+		input[type="datetime-local"] {
+		    height: 70px;
+		    min-height: 70px;
+		    line-height: normal;
 		}
 		select {
 		    background-position: right 15px center;
@@ -203,6 +214,15 @@
 	    .button-group {
 	        flex-direction: column;
 	    }
+		input,
+		select {
+		    height: 70px;
+		}
+
+		input[type="datetime-local"] {
+		    height: 70px;
+		    min-height: 70px;
+		}
 	}
     </style>
     </head>
