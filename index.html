@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -7,7 +7,7 @@
 
     <style>
         body {
-   	    background-image: url("IMG_1334.jpg");
+   	    background-image: url("/IMG_1334.jpg");
 
             background-size: cover;
 
@@ -111,35 +111,40 @@
 	}
 	@media screen and (max-width: 600px) {
 	    body {
-        	padding: 10px;
-    	    }
+	        padding: 0;
+	        background-attachment: scroll;
+	        background-size: cover;
+	        background-position: center;
+	    }
 
-    	    .card {
-       		width: 95%;
-        	padding: 20px;
-    	    }
+	    .card {
+	        width: 92%;
+	        padding: 20px;
+	        margin: 20px auto;
+	    }
 
-    	    h1 {
-        	font-size: 36px;
-    	    }
+	    h1 {
+	        font-size: 40px;
+	    }
 
-    	    input, select, textarea {
-        	width: 100%;
-    	    }
+	    input, select, textarea {
+	        width: 100%;
+	        font-size: 16px;
+	    }
 
-    	    button {
-        	width: 100%;
-    	    }
+	    button {
+	        width: 100%;
+	    }
 
-    	    .record {
-        	width: 90%;
-    	    }
+	    .record {
+	        width: 92%;
+	    }
 
-    	    .button-group {
-        	flex-direction: column;
-        	gap: 5px;
-    	    }
-}
+	    .button-group {
+	        flex-direction: column;
+	        gap: 5px;
+	    }
+	}
     </style>
     </head>
 
@@ -149,182 +154,173 @@
 
         <h1>にゃん🐾ログ</h1>
 
-    
+		<form action="/add" 
+			  method="post" 
+			  enctype="multipart/form-data">
         <label>投稿者</label>
-        <select id="user">
+        <select name="careUser">
             <option>👧🏻</option>
             <option>👦🏻</option>
         </select>
 
         <label>時間</label>
-        <input type="datetime-local" id="time">
+        <input type="datetime-local" name="time">
 
         <label>お世話の項目</label>
-        <select id="category">
+        <select name="category">
             <option>ご飯🐟</option>
+			<option>遊び🧶</option>
+			<option>嘔吐🤢</option>
+			<option>トイレ掃除🚽</option>
             <option>水交換💧</option>
+			
             <option>チュール😻</option>
-            <option>トイレ掃除🚽</option>
-            <option>嘔吐🤢</option>
+            
+			<option>爪切り✂️</option>
+			<option>ブラッシング✨</option>
+			<option>体重測定⚖️</option>
             <option>通院🏥</option>
             <option>その他</option>
         </select>
 
         <label>メモ</label>
-        <textarea id="memo" placeholder="例：ご飯を半分食べた、ゲロったので掃除した"></textarea>
+        <textarea name="memo" placeholder="例：ご飯を半分食べた、ゲロったので掃除した"></textarea>
 
         <label>写真</label>
-        <input type="file" id="photo" accept="image/*">
+        <input type="file" name="photo" accept="image/*">
 
-        <button onclick="addRecord()">投稿</button>
+		<button type="submit">投稿</button>
+
+		</form>
 
         <hr>
 
 	<label>絞り込み</label>
 
-	<select id="filter" onchange="showRecords()">
+	<select id="filter">
         <option value="全部">全部</option>
         <option value="ご飯🐟">ご飯🐟</option>
+		<option value="遊び🧶">遊び🧶</option>
+		<option value="嘔吐🤢">嘔吐🤢</option>
+		<option value="トイレ掃除🚽">トイレ掃除🚽</option>
         <option value="水交換💧">水交換💧</option>
+		
         <option value="チュール😻">チュール😻</option>
-        <option value="トイレ掃除🚽">トイレ掃除🚽</option>
-        <option value="嘔吐🤢">嘔吐🤢</option>
+		<option value="爪切り✂️">爪切り✂️</option>
+		<option value="ブラッシング✨">ブラッシング✨</option>
+		<option value="体重測定⚖️">体重測定⚖️</option>
+        
         <option value="通院🏥">通院🏥</option>
         <option value="その他">その他</option>
 	</select>
 
         <h3>今日の記録</h3>
 
-        <div id="recordList"></div>
+		<div id="recordList">
+
+		    <div class="record" th:each="record : ${records}">
+				
+
+				    <!-- 通常表示 -->
+				    <div th:if="${editId != record.id}">
+
+				        <p>
+				            <strong th:text="${record.time}"></strong>
+				            <span th:text="${record.careUser}"></span>
+				            <span th:text="${record.category}"></span>
+				        </p>
+
+				        <p th:text="${record.memo}"></p>
+						<img th:if="${record.photoPath != null}"
+						     th:src="${record.photoPath}">
+
+				        <div class="button-group">
+
+				            <a th:href="@{/(editId=${record.id})}">
+				                <button type="button">編集</button>
+				            </a>
+
+				            <form action="/delete"
+				                  method="post"
+				                  onsubmit="return confirm('本当に削除しますか？')">
+				                <input type="hidden" name="id" th:value="${record.id}">
+				                <button type="submit">削除</button>
+				            </form>
+
+				        </div>
+
+				    </div>
+
+				    <!-- 編集表示 -->
+				    <div th:if="${editId == record.id}">
+
+				        <form action="/update" method="post">
+
+				            <input type="hidden" name="id" th:value="${record.id}">
+
+				            <label>投稿者</label>
+				            <select name="careUser">
+				                <option value="👧🏻" th:selected="${record.careUser == '👧🏻'}">👧🏻</option>
+				                <option value="👦🏻" th:selected="${record.careUser == '👦🏻'}">👦🏻</option>
+				            </select>
+
+				            <label>時間</label>
+				            <input type="datetime-local" name="time" th:value="${record.time}">
+
+				            <label>お世話の項目</label>
+				            <select name="category">
+				                <option value="ご飯🐟" th:selected="${record.category == 'ご飯🐟'}">ご飯🐟</option>
+								<option value="遊び🧶"
+								    th:selected="${record.category == '遊び🧶'}">
+								    遊び🧶
+								</option>
+								<option value="嘔吐🤢" th:selected="${record.category == '嘔吐🤢'}">嘔吐🤢</option>
+								<option value="トイレ掃除🚽" th:selected="${record.category == 'トイレ掃除🚽'}">トイレ掃除🚽</option>
+				                <option value="水交換💧" th:selected="${record.category == '水交換💧'}">水交換💧</option>
+				                <option value="チュール😻" th:selected="${record.category == 'チュール😻'}">チュール😻</option>
+								<option value="爪切り✂️"
+								    th:selected="${record.category == '爪切り✂️'}">
+								    爪切り✂️
+								</option>
+
+								<option value="ブラッシング✨"
+								    th:selected="${record.category == 'ブラッシング✨'}">
+								    ブラッシング✨
+								</option>
+
+								<option value="体重測定⚖️"
+								    th:selected="${record.category == '体重測定⚖️'}">
+								    体重測定⚖️
+								</option>
+				                
+				                <option value="通院🏥" th:selected="${record.category == '通院🏥'}">通院🏥</option>
+				                <option value="その他" th:selected="${record.category == 'その他'}">その他</option>
+				            </select>
+
+				            <label>メモ</label>
+				            <textarea name="memo" th:text="${record.memo}"></textarea>
+
+				            <button type="submit">更新</button>
+
+				        </form>
+
+						<a href="/">
+						    <button type="button">キャンセル</button>
+						</a>
+
+						</div>
+
+						</div>
+
+				
+		    </div>
+
+		</div>
 
 
 
     <script>
-        let records = [];
 
-        window.onload = function() {
-            const savedRecords = localStorage.getItem("records");
-
-            if (savedRecords) {
-                records = JSON.parse(savedRecords);
-                showRecords();
-            }
-        }
-
-        function addRecord() {
-            const user = document.getElementById("user").value;
-            const time = document.getElementById("time").value;
-            const category = document.getElementById("category").value;
-            const memo = document.getElementById("memo").value;
-            const photo = document.getElementById("photo").files[0];
-
-            let displayTime = time;
-            if (time) {
-                displayTime = time.replace("T", " ");
-            } else {
-                displayTime = "時間未指定";
-            }
-
-            if (photo) {
-                const reader = new FileReader();
-
-                reader.onload = function(event) {
-                    const record = {
-                        user: user,
-                        time: displayTime,
-                        category: category,
-                        memo: memo,
-                        photo: event.target.result
-                    };
-
-                    records.unshift(record);
-                    saveRecords();
-                    showRecords();
-                    clearForm();
-                };
-
-                reader.readAsDataURL(photo);
-            } else {
-                const record = {
-                    user: user,
-                    time: displayTime,
-                    category: category,
-                    memo: memo,
-                    photo: ""
-                };
-
-                records.unshift(record);
-                saveRecords();
-                showRecords();
-                clearForm();
-            }
-        }
-
-        function saveRecords() {
-            localStorage.setItem("records", JSON.stringify(records));
-        }
-
-        function showRecords() {
-            const recordList = document.getElementById("recordList");
-            recordList.innerHTML = "";
-
-            const filter = document.getElementById("filter").value;
-
-	    records.forEach(function(record, index) {
-	
-    		if (filter !== "全部" && record.category !== filter) {
-        	    return;
-    		}
-                const div = document.createElement("div");
-                div.className = "record";
-
-                div.innerHTML = `
-     		<p><strong>${record.time}</strong>　${record.user}　${record.category}</p>
-   		<p>${record.memo}</p>
-
-   		<div class="button-group">
-        	<button onclick="editRecord(${index})">編集</button>
-        	<button onclick="deleteRecord(${index})">削除</button>
-    	</div>
-	`;
-
-                if (record.photo) {
-                    const img = document.createElement("img");
-                    img.src = record.photo;
-                    div.appendChild(img);
-                }
-
-                recordList.appendChild(div);
-            });
-        }
-
-        function clearForm() {
-            document.getElementById("memo").value = "";
-            document.getElementById("photo").value = "";
-        }
-	function deleteRecord(index) {
-
-    const result = confirm("本当に削除しますか？");
-
-    if (result) {
-        records.splice(index, 1);
-
-        saveRecords();
-
-        showRecords();
-    }
-}
-function editRecord(index) {
-    const newMemo = prompt("メモを編集してください", records[index].memo);
-
-    if (newMemo !== null) {
-        records[index].memo = newMemo;
-
-        saveRecords();
-
-        showRecords();
-    }
-}
     </script>
     </div>
 </body>
