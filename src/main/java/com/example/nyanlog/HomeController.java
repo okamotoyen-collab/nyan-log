@@ -1,9 +1,7 @@
 package com.example.nyanlog;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
+
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 
 @Controller
 public class HomeController {
@@ -51,19 +52,21 @@ public class HomeController {
         record.setMemo(memo);
 
         if (!photo.isEmpty()) {
-            String fileName = System.currentTimeMillis() + "_" + photo.getOriginalFilename();
 
-            Path uploadPath = Paths.get("uploads");
+            Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+                    "cloud_name", System.getenv("CLOUDINARY_CLOUD_NAME"),
+                    "api_key", System.getenv("CLOUDINARY_API_KEY"),
+                    "api_secret", System.getenv("CLOUDINARY_API_SECRET")
+            ));
 
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
+            Map uploadResult = cloudinary.uploader().upload(
+                    photo.getBytes(),
+                    ObjectUtils.asMap("folder", "nyan-log")
+            );
 
-            Path filePath = uploadPath.resolve(fileName);
+            String imageUrl = uploadResult.get("secure_url").toString();
 
-            Files.copy(photo.getInputStream(), filePath);
-
-            record.setPhotoPath("/uploads/" + fileName);
+            record.setPhotoPath(imageUrl);
         }
 
         recordRepository.save(record);
